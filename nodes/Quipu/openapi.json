@@ -1,0 +1,3147 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Quipu API",
+    "description": "Quipu is an invoice and taxes software as a service for freelances and companies.\n\nTo use our API you need to sign up in our software. You will have 15 days to try it for free.\nIf you need more time, contact our support team to extend the trial period.\n\nFor more information about our API, libraries and other applications, visit: https://getquipu.com/en/integrations.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://getquipu.com",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "oauth2": []
+    }
+  ],
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "summary": "Get an access token",
+        "operationId": "getAccessToken",
+        "tags": ["Authentication"],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["grant_type", "scope"],
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "enum": ["client_credentials"]
+                  },
+                  "scope": {
+                    "type": "string",
+                    "example": "ecommerce"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "summary": "Retrieve all contacts",
+        "operationId": "getContacts",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterQ"
+          },
+          {
+            "$ref": "#/components/parameters/FilterKind"
+          },
+          {
+            "$ref": "#/components/parameters/FilterTaxId"
+          },
+          {
+            "$ref": "#/components/parameters/FilterCountry"
+          },
+          {
+            "$ref": "#/components/parameters/FilterEmail"
+          },
+          {
+            "$ref": "#/components/parameters/SortParameter"
+          },
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactCollection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new contact",
+        "operationId": "createContact",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific contact",
+        "operationId": "getContact",
+        "tags": ["Contacts"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a contact",
+        "operationId": "updateContact",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a contact",
+        "operationId": "deleteContact",
+        "tags": ["Contacts"],
+        "responses": {
+          "204": {
+            "description": "Contact deleted successfully"
+          },
+          "403": {
+            "description": "Contact could not be deleted"
+          }
+        }
+      }
+    },
+    "/book_entries": {
+      "get": {
+        "summary": "Retrieve all invoices, tickets and paysheets",
+        "operationId": "getBookEntries",
+        "tags": ["Book Entries"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterType"
+          },
+          {
+            "$ref": "#/components/parameters/FilterKind"
+          },
+          {
+            "$ref": "#/components/parameters/FilterQ"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPeriod"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPaymentStatus"
+          },
+          {
+            "$ref": "#/components/parameters/FilterContactId"
+          },
+          {
+            "$ref": "#/components/parameters/FilterFieldQuery"
+          },
+          {
+            "$ref": "#/components/parameters/SortParameter"
+          },
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookEntryCollection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "get": {
+        "summary": "Retrieve all invoices",
+        "operationId": "getInvoices",
+        "tags": ["Invoices"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterKind"
+          },
+          {
+            "$ref": "#/components/parameters/FilterQ"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPeriod"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPaymentStatus"
+          },
+          {
+            "$ref": "#/components/parameters/FilterContactId"
+          },
+          {
+            "$ref": "#/components/parameters/FilterFieldQuery"
+          },
+          {
+            "$ref": "#/components/parameters/SortParameter"
+          },
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          },
+          {
+            "$ref": "#/components/parameters/IncludeItems"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceCollection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new invoice",
+        "operationId": "createInvoice",
+        "tags": ["Invoices"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific invoice",
+        "operationId": "getInvoice",
+        "tags": ["Invoices"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IncludeItems"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an invoice",
+        "operationId": "updateInvoice",
+        "tags": ["Invoices"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoice updated successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an invoice",
+        "operationId": "deleteInvoice",
+        "tags": ["Invoices"],
+        "responses": {
+          "204": {
+            "description": "Invoice deleted successfully"
+          }
+        }
+      }
+    },
+    "/tickets": {
+      "get": {
+        "summary": "Retrieve all tickets",
+        "operationId": "getTickets",
+        "tags": ["Tickets"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterKind"
+          },
+          {
+            "$ref": "#/components/parameters/FilterQ"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPeriod"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPaymentStatus"
+          },
+          {
+            "$ref": "#/components/parameters/FilterContactId"
+          },
+          {
+            "$ref": "#/components/parameters/FilterFieldQuery"
+          },
+          {
+            "$ref": "#/components/parameters/SortParameter"
+          },
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          },
+          {
+            "$ref": "#/components/parameters/IncludeItems"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketCollection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new ticket",
+        "operationId": "createTicket",
+        "tags": ["Tickets"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ticket created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tickets/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific ticket",
+        "operationId": "getTicket",
+        "tags": ["Tickets"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IncludeItems"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a ticket",
+        "operationId": "updateTicket",
+        "tags": ["Tickets"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket updated successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a ticket",
+        "operationId": "deleteTicket",
+        "tags": ["Tickets"],
+        "responses": {
+          "204": {
+            "description": "Ticket deleted successfully"
+          }
+        }
+      }
+    },
+    "/paysheets": {
+      "get": {
+        "summary": "Retrieve all paysheets",
+        "operationId": "getPaysheets",
+        "tags": ["Paysheets"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterQ"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPeriod"
+          },
+          {
+            "$ref": "#/components/parameters/FilterPaymentStatus"
+          },
+          {
+            "$ref": "#/components/parameters/FilterContactId"
+          },
+          {
+            "$ref": "#/components/parameters/FilterFieldQuery"
+          },
+          {
+            "$ref": "#/components/parameters/SortParameter"
+          },
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaysheetCollection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new paysheet",
+        "operationId": "createPaysheet",
+        "tags": ["Paysheets"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaysheetCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paysheet created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaysheetResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/paysheets/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific paysheet",
+        "operationId": "getPaysheet",
+        "tags": ["Paysheets"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaysheetResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a paysheet",
+        "operationId": "updatePaysheet",
+        "tags": ["Paysheets"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaysheetUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paysheet updated successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaysheetResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a paysheet",
+        "operationId": "deletePaysheet",
+        "tags": ["Paysheets"],
+        "responses": {
+          "204": {
+            "description": "Paysheet deleted successfully"
+          }
+        }
+      }
+    },
+    "/numbering_series": {
+      "get": {
+        "summary": "Retrieve all numbering series",
+        "operationId": "getNumberingSeries",
+        "tags": ["Numbering Series"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterPrefix"
+          },
+          {
+            "$ref": "#/components/parameters/FilterApplicableTo"
+          },
+          {
+            "$ref": "#/components/parameters/FilterAmending"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NumberingSeriesCollection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new numbering series",
+        "operationId": "createNumberingSeries",
+        "tags": ["Numbering Series"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NumberingSeriesCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Numbering series created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NumberingSeriesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/numbering_series/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific numbering series",
+        "operationId": "getNumberingSerie",
+        "tags": ["Numbering Series"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NumberingSeriesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a numbering series",
+        "operationId": "updateNumberingSeries",
+        "tags": ["Numbering Series"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NumberingSeriesUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Numbering series updated successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NumberingSeriesResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a numbering series",
+        "operationId": "deleteNumberingSeries",
+        "tags": ["Numbering Series"],
+        "responses": {
+          "204": {
+            "description": "Numbering series deleted successfully"
+          },
+          "403": {
+            "description": "Numbering series could not be deleted"
+          }
+        }
+      }
+    },
+    "/accounting_categories": {
+      "get": {
+        "summary": "Retrieve all accounting categories",
+        "operationId": "getAccountingCategories",
+        "tags": ["Accounting Categories"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterKind"
+          },
+          {
+            "$ref": "#/components/parameters/FilterAccountingPrefix"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingCategoryCollection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounting_categories/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific accounting category",
+        "operationId": "getAccountingCategory",
+        "tags": ["Accounting Categories"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingCategoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounting_subcategories": {
+      "get": {
+        "summary": "Retrieve all accounting subcategories",
+        "operationId": "getAccountingSubcategories",
+        "tags": ["Accounting Subcategories"],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterAccountingCategoryId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingSubcategoryCollection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new accounting subcategory",
+        "operationId": "createAccountingSubcategory",
+        "tags": ["Accounting Subcategories"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountingSubcategoryCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Accounting subcategory created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingSubcategoryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounting_subcategories/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific accounting subcategory",
+        "operationId": "getAccountingSubcategory",
+        "tags": ["Accounting Subcategories"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingSubcategoryResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an accounting subcategory",
+        "operationId": "updateAccountingSubcategory",
+        "tags": ["Accounting Subcategories"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/vnd.quipu.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountingSubcategoryUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accounting subcategory updated successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingSubcategoryResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an accounting subcategory",
+        "operationId": "deleteAccountingSubcategory",
+        "tags": ["Accounting Subcategories"],
+        "responses": {
+          "204": {
+            "description": "Accounting subcategory deleted successfully"
+          }
+        }
+      }
+    },
+    "/attachments": {
+      "post": {
+        "summary": "Upload a new attachment",
+        "operationId": "createAttachment",
+        "tags": ["Attachments"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file", "book_entry_id"],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "book_entry_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Attachment created successfully",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachments/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieve a specific attachment",
+        "operationId": "getAttachment",
+        "tags": ["Attachments"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/vnd.quipu.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an attachment",
+        "operationId": "deleteAttachment",
+        "tags": ["Attachments"],
+        "responses": {
+          "204": {
+            "description": "Attachment deleted successfully"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/oauth/token",
+            "scopes": {
+              "ecommerce": "Access to ecommerce operations"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "FilterQ": {
+        "name": "filter[q]",
+        "in": "query",
+        "description": "Search query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterKind": {
+        "name": "filter[kind]",
+        "in": "query",
+        "description": "Filter by kind",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "income",
+            "expenses",
+            "employee",
+            "supplier",
+            "client",
+            "assets"
+          ]
+        }
+      },
+      "FilterTaxId": {
+        "name": "filter[tax_id]",
+        "in": "query",
+        "description": "Filter by tax ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterCountry": {
+        "name": "filter[country]",
+        "in": "query",
+        "description": "Filter by countries (comma separated)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterEmail": {
+        "name": "filter[email]",
+        "in": "query",
+        "description": "Filter by email",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterType": {
+        "name": "filter[type]",
+        "in": "query",
+        "description": "Filter by type",
+        "schema": {
+          "type": "string",
+          "enum": ["invoices", "tickets", "paysheets"]
+        }
+      },
+      "FilterPeriod": {
+        "name": "filter[period]",
+        "in": "query",
+        "description": "Filter by period",
+        "schema": {
+          "type": "string",
+          "example": "2015-Q1"
+        }
+      },
+      "FilterPaymentStatus": {
+        "name": "filter[payment_status]",
+        "in": "query",
+        "description": "Filter by payment status",
+        "schema": {
+          "type": "string",
+          "enum": ["paid", "unpaid", "due", "pending"]
+        }
+      },
+      "FilterContactId": {
+        "name": "filter[contact_id]",
+        "in": "query",
+        "description": "Filter by contact ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterFieldQuery": {
+        "name": "filter[field_query]",
+        "in": "query",
+        "description": "Filter by field and term",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "field": {
+              "type": "string"
+            },
+            "term": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "FilterPrefix": {
+        "name": "filter[prefix]",
+        "in": "query",
+        "description": "Filter by prefix",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterApplicableTo": {
+        "name": "filter[applicable_to]",
+        "in": "query",
+        "description": "Filter by applicable document type",
+        "schema": {
+          "type": "string",
+          "enum": ["invoices", "tickets", "budgets"]
+        }
+      },
+      "FilterAmending": {
+        "name": "filter[amending]",
+        "in": "query",
+        "description": "Filter by amending status",
+        "schema": {
+          "type": "string",
+          "enum": [true, false]
+        }
+      },
+      "FilterAccountingPrefix": {
+        "name": "filter[prefix]",
+        "in": "query",
+        "description": "Filter by accounting prefix",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "FilterAccountingCategoryId": {
+        "name": "filter[accounting_category_id]",
+        "in": "query",
+        "description": "Filter by accounting category ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "SortParameter": {
+        "name": "sort",
+        "in": "query",
+        "description": "Sort criteria",
+        "schema": {
+          "type": "string",
+          "example": "-issue_date,total_amount"
+        }
+      },
+      "PageNumber": {
+        "name": "page[number]",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "IncludeItems": {
+        "name": "include",
+        "in": "query",
+        "description": "Include related resources",
+        "schema": {
+          "type": "string",
+          "enum": ["items"]
+        }
+      }
+    },
+    "schemas": {
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token_type": {
+            "type": "string",
+            "example": "bearer"
+          },
+          "created_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "pagination_info": {
+                "type": "object",
+                "properties": {
+                  "total_pages": {
+                    "type": "integer"
+                  },
+                  "current_page": {
+                    "type": "integer"
+                  },
+                  "total_results": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "detail": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "pointer": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContactAttributes": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tax_id": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "town": {
+            "type": "string"
+          },
+          "zip_code": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
+          "total_paid_incomes": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_unpaid_incomes": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_incomes": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_paid_expenses": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_unpaid_expenses": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_expenses": {
+            "type": "string",
+            "readOnly": true
+          },
+          "client_number": {
+            "type": "string"
+          },
+          "supplier_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_client": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "is_supplier": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "is_employee": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "is_supplier_of_direct_goods": {
+            "type": "boolean"
+          },
+          "bank_account_number": {
+            "type": "string"
+          },
+          "bank_account_swift_bic": {
+            "type": "string"
+          },
+          "deletable": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        }
+      },
+      "ContactCreate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "attributes"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["contacts"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/ContactAttributes"
+              }
+            }
+          }
+        }
+      },
+      "ContactUpdate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "attributes"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["contacts"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/ContactAttributes"
+              }
+            }
+          }
+        }
+      },
+      "ContactResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["contacts"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/ContactAttributes"
+              }
+            }
+          }
+        }
+      },
+      "ContactCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "attributes": {
+                      "$ref": "#/components/schemas/ContactAttributes"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ItemAttributes": {
+        "type": "object",
+        "properties": {
+          "concept": {
+            "type": "string"
+          },
+          "unitary_amount": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["current", "assets", "reimbursement"],
+            "default": "current"
+          },
+          "vat_percent": {
+            "type": "string"
+          },
+          "retention_percent": {
+            "type": "string"
+          },
+          "discount_percent": {
+            "type": "string"
+          },
+          "deductible_vat_percent": {
+            "type": "string"
+          },
+          "deductible_expense_percent": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "vat_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "retention_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "discount_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_amount": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "ItemInvoiceCreate": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["book_entry_items"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/ItemAttributes"
+          }
+        }
+      },
+      "ItemInvoiceUpdate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["book_entry_items"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/ItemAttributes"
+          }
+        }
+      },
+      "BookEntryCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/InvoiceData"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TicketData"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PaysheetData"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "InvoiceAttributes": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["income", "expenses"]
+          },
+          "number": {
+            "type": "string"
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "due_dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "bank_transfer",
+              "bank_card",
+              "direct_debit",
+              "paypal",
+              "check",
+              "factoring"
+            ]
+          },
+          "payment_status": {
+            "type": "string",
+            "enum": ["paid", "unpaid", "due", "pending"],
+            "readOnly": true
+          },
+          "validation_status": {
+            "type": "string",
+            "enum": ["pending", "verified"],
+            "readOnly": true
+          },
+          "total_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_amount_without_taxes": {
+            "type": "string",
+            "readOnly": true
+          },
+          "vat_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "retention_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_name": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_tax_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_address": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_phone": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_town": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_zip_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_country_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_name": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_tax_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_address": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_phone": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_town": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_zip_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_country_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "last_sent_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tags": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "download_pdf_url": {
+            "type": "string",
+            "readOnly": true
+          },
+          "ephemeral_open_download_pdf_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "InvoiceRelationships": {
+        "type": "object",
+        "properties": {
+          "contact": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["contacts"]
+                  }
+                }
+              }
+            }
+          },
+          "accounting_category": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_categories"]
+                  }
+                }
+              }
+            }
+          },
+          "accounting_subcategory": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_subcategories"]
+                  }
+                }
+              }
+            }
+          },
+          "numeration": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["numbering_series"]
+                  }
+                }
+              }
+            }
+          },
+          "analytic_categories": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["analytic_categories"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ItemInvoiceCreate"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ItemInvoiceUpdate"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "amended_invoice": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["invoices"]
+                  }
+                }
+              }
+            }
+          },
+          "amending_invoices": {
+            "type": "object",
+            "readOnly": true,
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["invoices"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvoiceData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["invoices"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/InvoiceAttributes"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/InvoiceRelationships"
+          }
+        }
+      },
+      "InvoiceCreate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["invoices"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/InvoiceAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/InvoiceRelationships"
+              }
+            }
+          }
+        }
+      },
+      "InvoiceUpdate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "id"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["invoices"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/InvoiceAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/InvoiceRelationships"
+              }
+            }
+          }
+        }
+      },
+      "InvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/InvoiceData"
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "attributes": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InvoiceCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InvoiceData"
+                }
+              },
+              "included": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "attributes": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TicketAttributes": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["income", "expenses"]
+          },
+          "number": {
+            "type": "string"
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "bank_transfer",
+              "bank_card",
+              "direct_debit",
+              "paypal",
+              "check",
+              "factoring"
+            ]
+          },
+          "payment_status": {
+            "type": "string",
+            "enum": ["paid", "unpaid", "due", "pending"],
+            "readOnly": true
+          },
+          "validation_status": {
+            "type": "string",
+            "enum": ["pending", "verified"],
+            "readOnly": true
+          },
+          "total_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "total_amount_without_taxes": {
+            "type": "string",
+            "readOnly": true
+          },
+          "vat_amount": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_name": {
+            "type": "string"
+          },
+          "issuing_tax_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "issuing_address": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "issuing_phone": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "issuing_town": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "issuing_zip_code": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "issuing_country_code": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "recipient_name": {
+            "type": "string"
+          },
+          "recipient_tax_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_address": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_phone": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_town": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_zip_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_country_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "tags": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "download_pdf_url": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "TicketRelationships": {
+        "type": "object",
+        "properties": {
+          "accounting_category": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_categories"]
+                  }
+                }
+              }
+            }
+          },
+          "accounting_subcategory": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_subcategories"]
+                  }
+                }
+              }
+            }
+          },
+          "numeration": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["numbering_series"]
+                  }
+                }
+              }
+            }
+          },
+          "analytic_categories": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["analytic_categories"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ItemInvoiceCreate"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ItemInvoiceUpdate"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "amended_ticket": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["tickets"]
+                  }
+                }
+              }
+            }
+          },
+          "amending_tickets": {
+            "type": "object",
+            "readOnly": true,
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["tickets"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TicketData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["tickets"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/TicketAttributes"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/TicketRelationships"
+          }
+        }
+      },
+      "TicketCreate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["tickets"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/TicketAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/TicketRelationships"
+              }
+            }
+          }
+        }
+      },
+      "TicketUpdate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "id"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["tickets"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/TicketAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/TicketRelationships"
+              }
+            }
+          }
+        }
+      },
+      "TicketResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/TicketData"
+          },
+          "included": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "attributes": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TicketCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TicketData"
+                }
+              },
+              "included": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "attributes": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "PaysheetAttributes": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["expenses"],
+            "readOnly": true
+          },
+          "number": {
+            "type": "string"
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "enum": [
+              "cash",
+              "bank_transfer",
+              "bank_card",
+              "direct_debit",
+              "paypal",
+              "check",
+              "factoring"
+            ]
+          },
+          "payment_status": {
+            "type": "string",
+            "enum": ["paid", "unpaid", "due", "pending"],
+            "readOnly": true
+          },
+          "net_pay": {
+            "type": "string"
+          },
+          "gross_pay": {
+            "type": "string",
+            "readOnly": true
+          },
+          "employee_ss_amount": {
+            "type": "string"
+          },
+          "employee_retention": {
+            "type": "string"
+          },
+          "company_ss_amount": {
+            "type": "string"
+          },
+          "issuing_name": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_tax_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_address": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_phone": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_town": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_zip_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "issuing_country_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_name": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_tax_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_address": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_phone": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_town": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_zip_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "recipient_country_code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "tags": {
+            "type": "string"
+          }
+        }
+      },
+      "PaysheetRelationships": {
+        "type": "object",
+        "properties": {
+          "contact": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["contacts"]
+                  }
+                }
+              }
+            }
+          },
+          "accounting_category": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_categories"]
+                  }
+                }
+              }
+            }
+          },
+          "accounting_subcategory": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_subcategories"]
+                  }
+                }
+              }
+            }
+          },
+          "numeration": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["numbering_series"]
+                  }
+                }
+              }
+            }
+          },
+          "analytic_categories": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["analytic_categories"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaysheetData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["paysheets"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/PaysheetAttributes"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/PaysheetRelationships"
+          }
+        }
+      },
+      "PaysheetCreate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["paysheets"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/PaysheetAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/PaysheetRelationships"
+              }
+            }
+          }
+        }
+      },
+      "PaysheetUpdate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "id"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["paysheets"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/PaysheetAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/PaysheetRelationships"
+              }
+            }
+          }
+        }
+      },
+      "PaysheetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PaysheetData"
+          }
+        }
+      },
+      "PaysheetCollection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PaysheetData"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "NumberingSeriesAttributes": {
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string"
+          },
+          "applicable_to": {
+            "type": "string",
+            "enum": ["invoices", "tickets"]
+          },
+          "default": {
+            "type": "boolean"
+          },
+          "amending": {
+            "type": "boolean"
+          },
+          "deletable": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        }
+      },
+      "NumberingSeriesData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["numbering_series"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/NumberingSeriesAttributes"
+          }
+        }
+      },
+      "NumberingSeriesCreate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "attributes"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["numbering_series"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/NumberingSeriesAttributes"
+              }
+            }
+          }
+        }
+      },
+      "NumberingSeriesUpdate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "id"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["numbering_series"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/NumberingSeriesAttributes"
+              }
+            }
+          }
+        }
+      },
+      "NumberingSeriesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/NumberingSeriesData"
+          }
+        }
+      },
+      "NumberingSeriesCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NumberingSeriesData"
+            }
+          }
+        }
+      },
+      "AccountingCategoryAttributes": {
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "readOnly": true
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["income", "expenses", "assets"],
+            "readOnly": true
+          }
+        }
+      },
+      "AccountingCategoryData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["accounting_categories"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/AccountingCategoryAttributes"
+          }
+        }
+      },
+      "AccountingCategoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AccountingCategoryData"
+          }
+        }
+      },
+      "AccountingCategoryCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountingCategoryData"
+            }
+          }
+        }
+      },
+      "AccountingSubcategoryAttributes": {
+        "type": "object",
+        "properties": {
+          "suffix": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountingSubcategoryRelationships": {
+        "type": "object",
+        "properties": {
+          "accounting_category": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["accounting_categories"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AccountingSubcategoryData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["accounting_subcategories"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/AccountingSubcategoryAttributes"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/AccountingSubcategoryRelationships"
+          }
+        }
+      },
+      "AccountingSubcategoryCreate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "attributes", "relationships"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["accounting_subcategories"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/AccountingSubcategoryAttributes"
+              },
+              "relationships": {
+                "$ref": "#/components/schemas/AccountingSubcategoryRelationships"
+              }
+            }
+          }
+        }
+      },
+      "AccountingSubcategoryUpdate": {
+        "type": "object",
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": ["type", "attributes"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["accounting_subcategories"]
+              },
+              "attributes": {
+                "$ref": "#/components/schemas/AccountingSubcategoryAttributes"
+              }
+            }
+          }
+        }
+      },
+      "AccountingSubcategoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AccountingSubcategoryData"
+          }
+        }
+      },
+      "AccountingSubcategoryCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountingSubcategoryData"
+            }
+          }
+        }
+      },
+      "AttachmentAttributes": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "small_url": {
+            "type": "string"
+          },
+          "thumbnail_url": {
+            "type": "string"
+          }
+        }
+      },
+      "AttachmentRelationships": {
+        "type": "object",
+        "properties": {
+          "book_entry": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["invoices", "tickets", "paysheets"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AttachmentData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["attachments"]
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/AttachmentAttributes"
+          },
+          "relationships": {
+            "$ref": "#/components/schemas/AttachmentRelationships"
+          }
+        }
+      },
+      "AttachmentResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AttachmentData"
+          }
+        }
+      }
+    }
+  }
+}

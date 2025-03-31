@@ -1,0 +1,46 @@
+import {
+  INodeType,
+  INodeTypeDescription,
+  NodeConnectionType,
+} from "n8n-workflow";
+import {
+  N8NPropertiesBuilder,
+  N8NPropertiesBuilderConfig,
+} from "@devlikeapro/n8n-openapi-node";
+import * as doc from "./openapi.json";
+
+const config: N8NPropertiesBuilderConfig = {};
+const parser = new N8NPropertiesBuilder(doc, config);
+const properties = parser.build();
+
+export class Quipu implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: "Quipu",
+    name: "quipu",
+    icon: "file:quipu.svg",
+    group: ["finance"],
+    version: 1,
+    subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+    description: "Interact with Quipu API for invoicing, accounting and taxes",
+    defaults: {
+      name: "Quipu",
+    },
+    inputs: [NodeConnectionType.Main],
+    outputs: [NodeConnectionType.Main],
+    credentials: [
+      {
+        name: "quipuApi",
+        required: true,
+      },
+    ],
+    requestDefaults: {
+      baseURL: "https://getquipu.com",
+      url: "",
+      headers: {
+        Accept: "application/vnd.quipu.v1+json",
+        "Content-Type": "application/vnd.quipu.v1+json",
+      },
+    },
+    properties: properties,
+  };
+}
