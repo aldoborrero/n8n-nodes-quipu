@@ -25,9 +25,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && gulp build:icons",
-    "dev": "tsc --watch",
-    "prepublishOnly": "npm run build && npm run lint -- -c .eslintrc.prepublish.js nodes credentials package.json",
-    "lint": "eslint"
+    "dev": "tsc --watch"
   },
   "files": [
     "dist"
