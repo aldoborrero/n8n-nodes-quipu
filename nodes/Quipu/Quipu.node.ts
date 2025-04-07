@@ -1,8 +1,5 @@
-import {
-  INodeType,
-  INodeTypeDescription,
-  NodeConnectionType,
-} from "n8n-workflow";
+import type { INodeType, INodeTypeDescription } from "n8n-workflow";
+import { NodeConnectionType } from "n8n-workflow";
 import {
   N8NPropertiesBuilder,
   N8NPropertiesBuilderConfig,
