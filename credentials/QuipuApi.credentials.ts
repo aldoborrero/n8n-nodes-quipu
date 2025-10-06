@@ -1,7 +1,8 @@
 import {
-  ICredentialDataDecryptedObject,
+  IAuthenticateGeneric,
+  ICredentialTestRequest,
   ICredentialType,
-  IHttpRequestOptions,
+  IHttpRequestHelper,
   INodeProperties,
 } from "n8n-workflow";
 
@@ -12,75 +13,67 @@ export class QuipuApi implements ICredentialType {
 
   properties: INodeProperties[] = [
     {
-      displayName: "Client ID",
-      name: "clientId",
+      displayName: "App ID",
+      name: "appId",
       type: "string",
       default: "",
+      required: true,
+      description: "The App ID from your Quipu account",
     },
     {
-      displayName: "Client Secret",
-      name: "clientSecret",
+      displayName: "App Secret",
+      name: "appSecret",
       type: "string",
       default: "",
+      required: true,
       typeOptions: {
         password: true,
       },
-    },
-    {
-      displayName: "Environment",
-      name: "environment",
-      type: "options",
-      default: "production",
-      options: [
-        {
-          name: "Production",
-          value: "production",
-        },
-      ],
+      description: "The App Secret from your Quipu account",
     },
   ];
 
-  async authenticate(
-    credentials: ICredentialDataDecryptedObject,
-    requestOptions: IHttpRequestOptions,
-  ): Promise<IHttpRequestOptions> {
-    const response = await this.getToken(credentials);
-    const { access_token } = response;
+  async preAuthentication(this: IHttpRequestHelper, credentials: any): Promise<any> {
+    // Encode app_id:app_secret in Base64 for Basic Authentication
+    const basicAuth = Buffer.from(
+      `${credentials.appId}:${credentials.appSecret}`
+    ).toString("base64");
 
-    requestOptions.headers = {
-      ...requestOptions.headers,
-      Accept: "application/vnd.quipu.v1+json",
-      Authorization: `Bearer ${access_token}`,
-    };
-
-    return requestOptions;
-  }
-
-  async getToken(credentials: ICredentialDataDecryptedObject): Promise<any> {
-    const { clientId, clientSecret } = credentials;
-
-    const baseUrl = "https://getquipu.com";
-
-    const options = {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+    // Fetch the access token using OAuth2 client credentials with Basic Auth
+    const tokenResponse = await this.helpers.httpRequest({
       method: "POST",
+      url: "https://getquipu.com/oauth/token",
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      },
       form: {
         grant_type: "client_credentials",
         scope: "ecommerce",
-        client_id: clientId as string,
-        client_secret: clientSecret as string,
       },
-      uri: `${baseUrl}/oauth/token`,
       json: true,
-    };
+    });
 
-    try {
-      // @ts-ignore
-      return await this.helpers.request(options);
-    } catch (error) {
-      throw new Error("Failed to get access token from Quipu API: " + error);
-    }
+    return {
+      accessToken: tokenResponse.access_token,
+    };
   }
+
+  authenticate: IAuthenticateGeneric = {
+    type: "generic",
+    properties: {
+      headers: {
+        Accept: "application/vnd.quipu.v1+json",
+        Authorization: "=Bearer {{$credentials.accessToken}}",
+      },
+    },
+  };
+
+  test: ICredentialTestRequest = {
+    request: {
+      baseURL: "https://getquipu.com",
+      url: "/contacts?page[number]=1",
+      method: "GET",
+    },
+  };
 }
