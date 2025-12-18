@@ -47,10 +47,7 @@ export class QuipuApi implements ICredentialType {
         Authorization: `Basic ${basicAuth}`,
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
       },
-      form: {
-        grant_type: "client_credentials",
-        scope: "ecommerce",
-      },
+      body: "grant_type=client_credentials&scope=ecommerce",
       json: true,
     });
 
