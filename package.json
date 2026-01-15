@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-quipu",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Quipu integration for n8n - invoice and taxes software for freelancers and companies",
   "keywords": [
     "n8n-community-node-package",
