@@ -1197,9 +1197,9 @@
       "FilterQ": {
         "name": "filter[q]",
         "in": "query",
-        "nullable": true,
         "description": "Search query",
         "schema": {
+          "nullable": true,
           "type": "string"
         }
       },
@@ -1225,79 +1225,81 @@
         "in": "query",
         "description": "Filter by tax ID",
         "schema": {
+          "nullable": true,
           "type": "string"
         }
       },
       "FilterCountry": {
         "name": "filter[country]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by countries (comma separated)",
         "schema": {
+          "nullable": true,
           "type": "string"
         }
       },
       "FilterEmail": {
         "name": "filter[email]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by email",
         "schema": {
+          "nullable": true,
           "type": "string"
         }
       },
       "FilterType": {
         "name": "filter[type]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by type",
         "schema": {
           "type": "string",
+          "nullable": true,
           "enum": ["invoices", "tickets", "paysheets"]
         }
       },
       "FilterPeriod": {
         "name": "filter[period]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by period",
         "schema": {
           "type": "string",
+          "nullable": true,
           "example": "2015-Q1"
         }
       },
       "FilterPaymentStatus": {
         "name": "filter[payment_status]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by payment status",
         "schema": {
           "type": "string",
+          "nullable": true,
           "enum": ["paid", "unpaid", "due", "pending"]
         }
       },
       "FilterContactId": {
         "name": "filter[contact_id]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by contact ID",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         }
       },
       "FilterFieldQuery": {
         "name": "filter[field_query]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by field and term",
         "schema": {
           "type": "object",
           "properties": {
             "field": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "term": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             }
           }
         }
@@ -1307,51 +1309,51 @@
         "in": "query",
         "description": "Filter by prefix",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         }
       },
       "FilterApplicableTo": {
         "name": "filter[applicable_to]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by applicable document type",
         "schema": {
           "type": "string",
+          "nullable": true,
           "enum": ["invoices", "tickets", "budgets"]
         }
       },
       "FilterAmending": {
         "name": "filter[amending]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by amending status",
         "schema": {
-          "type": "string",
+          "type": "boolean",
+          "nullable": true,
           "enum": [true, false]
         }
       },
       "FilterAccountingPrefix": {
         "name": "filter[prefix]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by accounting prefix",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         }
       },
       "FilterAccountingCategoryId": {
         "name": "filter[accounting_category_id]",
         "in": "query",
-        "nullable": true,
         "description": "Filter by accounting category ID",
         "schema": {
-          "type": "string"
+          "type": "string",
+          "nullable": true
         }
       },
       "SortParameter": {
         "name": "sort",
         "in": "query",
-        "nullable": true,
         "description": "Sort criteria",
         "schema": {
           "type": "string",
@@ -1361,7 +1363,6 @@
       "PageNumber": {
         "name": "page[number]",
         "in": "query",
-        "nullable": true,
         "description": "Page number for pagination",
         "schema": {
           "type": "integer"
@@ -1370,7 +1371,6 @@
       "IncludeItems": {
         "name": "include",
         "in": "query",
-        "nullable": true,
         "description": "Include related resources",
         "schema": {
           "type": "string",
