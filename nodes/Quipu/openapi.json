@@ -1197,6 +1197,7 @@
       "FilterQ": {
         "name": "filter[q]",
         "in": "query",
+        "nullable": true,
         "description": "Search query",
         "schema": {
           "type": "string"
@@ -1208,6 +1209,7 @@
         "description": "Filter by kind",
         "schema": {
           "type": "string",
+          "nullable": true,
           "enum": [
             "income",
             "expenses",
@@ -1229,6 +1231,7 @@
       "FilterCountry": {
         "name": "filter[country]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by countries (comma separated)",
         "schema": {
           "type": "string"
@@ -1237,6 +1240,7 @@
       "FilterEmail": {
         "name": "filter[email]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by email",
         "schema": {
           "type": "string"
@@ -1245,6 +1249,7 @@
       "FilterType": {
         "name": "filter[type]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by type",
         "schema": {
           "type": "string",
@@ -1254,6 +1259,7 @@
       "FilterPeriod": {
         "name": "filter[period]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by period",
         "schema": {
           "type": "string",
@@ -1263,6 +1269,7 @@
       "FilterPaymentStatus": {
         "name": "filter[payment_status]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by payment status",
         "schema": {
           "type": "string",
@@ -1272,6 +1279,7 @@
       "FilterContactId": {
         "name": "filter[contact_id]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by contact ID",
         "schema": {
           "type": "string"
@@ -1280,6 +1288,7 @@
       "FilterFieldQuery": {
         "name": "filter[field_query]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by field and term",
         "schema": {
           "type": "object",
@@ -1304,6 +1313,7 @@
       "FilterApplicableTo": {
         "name": "filter[applicable_to]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by applicable document type",
         "schema": {
           "type": "string",
@@ -1313,6 +1323,7 @@
       "FilterAmending": {
         "name": "filter[amending]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by amending status",
         "schema": {
           "type": "string",
@@ -1322,6 +1333,7 @@
       "FilterAccountingPrefix": {
         "name": "filter[prefix]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by accounting prefix",
         "schema": {
           "type": "string"
@@ -1330,6 +1342,7 @@
       "FilterAccountingCategoryId": {
         "name": "filter[accounting_category_id]",
         "in": "query",
+        "nullable": true,
         "description": "Filter by accounting category ID",
         "schema": {
           "type": "string"
@@ -1338,6 +1351,7 @@
       "SortParameter": {
         "name": "sort",
         "in": "query",
+        "nullable": true,
         "description": "Sort criteria",
         "schema": {
           "type": "string",
@@ -1347,6 +1361,7 @@
       "PageNumber": {
         "name": "page[number]",
         "in": "query",
+        "nullable": true,
         "description": "Page number for pagination",
         "schema": {
           "type": "integer"
@@ -1355,6 +1370,7 @@
       "IncludeItems": {
         "name": "include",
         "in": "query",
+        "nullable": true,
         "description": "Include related resources",
         "schema": {
           "type": "string",
