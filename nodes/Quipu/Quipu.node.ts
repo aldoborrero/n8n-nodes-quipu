@@ -1,5 +1,5 @@
 import type { INodeType, INodeTypeDescription } from "n8n-workflow";
-import { NodeConnectionType } from "n8n-workflow";
+import { NodeConnectionTypes } from "n8n-workflow";
 import {
   N8NPropertiesBuilder,
   N8NPropertiesBuilderConfig,
@@ -15,15 +15,15 @@ export class Quipu implements INodeType {
     displayName: "Quipu",
     name: "quipu",
     icon: "file:quipu.svg",
-    group: ["finance"],
+    group: ["transform"],
     version: 1,
     subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
     description: "Interact with Quipu API for invoicing, accounting and taxes",
     defaults: {
       name: "Quipu",
     },
-    inputs: [NodeConnectionType.Main],
-    outputs: [NodeConnectionType.Main],
+    inputs: [NodeConnectionTypes.Main],
+    outputs: [NodeConnectionTypes.Main],
     credentials: [
       {
         name: "quipuApi",
